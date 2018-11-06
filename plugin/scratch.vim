@@ -29,6 +29,7 @@ if !exists('g:scratch_persistence_always')
   let g:scratch_persistence_always = 0
 endif
 
+command! -nargs=0 ScratchRestore execute 'r '.g:scratch_persistence_file | exec "norm ggdd"
 command! -bang -nargs=0 Scratch call scratch#open(<bang>0)
 command! -bang -nargs=0 ScratchInsert call scratch#insert(<bang>0)
 command! -bang -nargs=0 -range ScratchSelection call scratch#selection(<bang>0)

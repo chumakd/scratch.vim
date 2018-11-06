@@ -3,17 +3,17 @@
 " window handling
 
 
-
 function! s:activate_autocmds(bufnr)
   if g:scratch_persistence_always
     if !empty(g:scratch_persistence_file)
-      augroup ScratchAutoHide
+      augroup ScratchAutoPermanence
         autocmd!
           execute 'autocmd WinEnter <buffer=' . a:bufnr . '> nested call <SID>close_window(0)'
-          execute 'autocmd VimLeavePre,WinLeave <buffer=' . a:bufnr . '> nested call <SID>close_window(1)'
+          execute 'autocmd VimLeavePre,WinLeave <buffer=' . a:bufnr . '> nested if strlen(g:scratch_persistence_file) > 0 | execute ":w! ". g:scratch_persistence_file | endif'
         augroup END
     endif
-  elseif g:scratch_autohide
+  endif
+  if g:scratch_autohide
       augroup ScratchAutoHide
         autocmd!
         execute 'autocmd WinEnter <buffer=' . a:bufnr . '> nested call <SID>close_window(0)'
@@ -32,6 +32,7 @@ function! s:open_window(position)
   " open scratch buffer window and move to it. this will create the buffer if
   " necessary.
   let scr_bufnr = bufnr('__Scratch__')
+  call xolox#misc#msg#info(scr_bufnr)
   if scr_bufnr == -1
     let cmd = g:scratch_horizontal ? 'new' : 'vnew'
     execute a:position . s:resolve_size(g:scratch_height) . cmd . ' __Scratch__'
@@ -65,6 +66,16 @@ function! s:open_window(position)
       let cmd = g:scratch_horizontal ? 'split' : 'vsplit'
       execute a:position . s:resolve_size(g:scratch_height) . cmd . ' +buffer' . scr_bufnr
     endif
+    execute 'setlocal filetype=' . g:scratch_filetype
+    setlocal bufhidden=hide
+    setlocal nobuflisted
+    setlocal buftype=nofile
+    setlocal foldcolumn=0
+    setlocal nofoldenable
+    setlocal nonumber
+    setlocal noswapfile
+    setlocal winfixheight
+    setlocal winfixwidth
   endif
 endfunction
 
