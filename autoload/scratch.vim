@@ -2,13 +2,24 @@
 
 " window handling
 
+
+
 function! s:activate_autocmds(bufnr)
-  if g:scratch_autohide
-    augroup ScratchAutoHide
-      autocmd!
-      execute 'autocmd WinEnter <buffer=' . a:bufnr . '> nested call <SID>close_window(0)'
-      execute 'autocmd WinLeave <buffer=' . a:bufnr . '> nested call <SID>close_window(1)'
-    augroup END
+  if g:scratch_persistence_always
+    if !empty(g:scratch_persistence_file)
+      augroup ScratchAutoHide
+        autocmd!
+          execute 'autocmd WinEnter <buffer=' . a:bufnr . '> nested call <SID>close_window(0)'
+          execute 'autocmd VimLeavePre,WinLeave <buffer=' . a:bufnr . '> nested call <SID>close_window(1)'
+        augroup END
+      endif
+  elseif g:scratch_autohide
+        augroup ScratchAutoHide
+          autocmd!
+          execute 'autocmd WinEnter <buffer=' . a:bufnr . '> nested call <SID>close_window(0)'
+          execute 'autocmd WinLeave <buffer=' . a:bufnr . '> nested call <SID>close_window(1)'
+        augroup END
+      endif
   endif
 endfunction
 
