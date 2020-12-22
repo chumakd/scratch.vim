@@ -32,7 +32,6 @@ function! s:open_window(position)
   " open scratch buffer window and move to it. this will create the buffer if
   " necessary.
   let scr_bufnr = bufnr('__Scratch__')
-  call xolox#misc#msg#info(scr_bufnr)
   if scr_bufnr == -1
     let cmd = g:scratch_horizontal ? 'new' : 'vnew'
     execute a:position . s:resolve_size(g:scratch_height) . cmd . ' __Scratch__'
